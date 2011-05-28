@@ -1,0 +1,73 @@
+// Semicolons aren't needed, but allowed
+ms = {};
+
+// Generic list fold function
+func ms:fold(fc)
+    // Asserts get stripped when not compiled in debug mode
+    assert(isMap(this),
+        "Value is not a map");
+
+    if size(this) == 0 then
+        return null;
+    elseif size(this) == 1 then
+        return this[0];
+    else
+        ret = fc(this[0], this[1]);
+        for i = 2, size(this) - 1 do
+            ret = fc(ret, this[i]);
+        end
+        return ret;
+    end
+end 
+
+// Generic populate function
+func ms:populate(sz, fc)
+    assert(sz > 0,
+        "Size is zero or less");
+    assert(isMap(this),
+        "Value is not a map");
+    assert(funcCheck(fc, 1, true) || funcCheck(fc, 2, true), 
+        "Illegal populator function signature");
+
+    if funcArgs(fc) == 2 then
+        for i = 0, sz - 1 do
+            this[] = fc(this, i);
+        end
+    else
+        for i = 0, sz - 1 do
+            this[] = fc(i);
+        end
+    end
+    return this;
+end
+
+// Generic filter function    
+func ms:filter(fc)
+    assert(funcCheck(fc, 1, true),
+        "Illegal filter function.");
+    assert(isMap(this),
+        "Value is not a map");
+
+    ret = {};
+    foreach v in this do
+        if fc(v) then
+            ret[] = v;
+        end
+    end
+    return ret;
+end
+
+funcReg("map", ms);
+
+println(
+    {}
+        ::populate(9, @{(i) return i + 1})
+        ::filter(
+            @{ (v) 
+                return (v % 3) && (v % 5) ? false : true;
+             })
+        ::fold(
+            @{ (a, b) 
+                return a + b;
+             })
+       );

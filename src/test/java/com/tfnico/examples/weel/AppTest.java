@@ -1,38 +1,22 @@
 package com.tfnico.examples.weel;
 
+import com.github.rjeschke.weel.Weel;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
+public class AppTest
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
+    public void doWeel()
     {
-        return new TestSuite( AppTest.class );
-    }
+        Weel weel = new Weel();
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+        // Compile also takes InputStreams and compileResource accepts a 'resource name',
+        // e.g. if you have a script inside you code in 'my.scripts' called 'Scripts.weel'
+        // you can simply use: weel.compileResource("my.scripts.Scripts");
+        weel.compile("println('Hello world!')");
+
+        weel.runStatic();
     }
 }
